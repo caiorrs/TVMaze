@@ -1,3 +1,4 @@
+import {ShowResponse} from './types';
 export interface ShowResponse {
   id: number;
   url: string;
@@ -86,7 +87,7 @@ export interface ShowDetailsResponse {
   averageRuntime: number;
   premiered: string;
   ended: string;
-  officialSite: string;
+  officialSite?: string;
   schedule: Schedule;
   rating: Rating;
   weight: number;
@@ -158,4 +159,35 @@ export interface Episode {
 
 interface Links2 {
   self: Self;
+}
+
+export interface SearchShowResponse {
+  score: number;
+  show: Show;
+}
+
+interface Show {
+  id: number;
+  url: string;
+  name: string;
+  type: string;
+  language: string;
+  genres: string[];
+  status: string;
+  runtime?: number;
+  averageRuntime?: number;
+  premiered?: string;
+  ended?: string;
+  officialSite?: string;
+  schedule: Schedule;
+  rating: Rating;
+  weight: number;
+  network?: Network;
+  webChannel?: WebChannel;
+  dvdCountry?: any;
+  externals: Externals;
+  image: Image;
+  summary?: string;
+  updated: number;
+  _links: Links;
 }

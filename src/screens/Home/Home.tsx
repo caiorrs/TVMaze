@@ -1,20 +1,25 @@
-import {ActivityIndicator, Pressable, Text, View} from 'react-native';
+import {ActivityIndicator, Text, TextInput} from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
+import {SearchResults, ShowList} from '../../components';
+import {SearchShowResponse, ShowResponse} from '../../services/types';
+import {getShowsPaginated, searchShowByQuery} from '../../services/shows';
 
-import FastImage from 'react-native-fast-image';
-import {FlashList} from '@shopify/flash-list';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {RootStackParamList} from '../../navigation/types';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {ShowResponse} from '../../services/types';
-import {getShowsPaginated} from '../../services/shows';
-import {useNavigation} from '@react-navigation/native';
+import {useDebounce} from '../../hooks/useDebounce';
 
-export const Home = () => {
+type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
+
+export const Home = ({navigation}: Props) => {
   const [shows, setShows] = useState<ShowResponse[]>([]);
+  const [results, setResults] = useState<SearchShowResponse[]>([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<unknown | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [search, setSearch] = useState('');
 
-  const navigation = useNavigation();
+  const debouncedSearch = useDebounce(search);
 
   const fetchShows = useCallback(() => {
     (async () => {
@@ -30,56 +35,55 @@ export const Home = () => {
     })();
   }, [currentPage]);
 
+  const searchShows = async (query: string) => {
+    setLoading(true);
+    try {
+      const response = await searchShowByQuery(query);
+      setResults(response.data);
+    } catch (err) {
+      setError(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchShows();
   }, [fetchShows]);
 
-  const renderItem = ({
-    item: show,
-    index,
-  }: {
-    item: ShowResponse;
-    index: number;
-  }) => {
-    return (
-      <Pressable
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          padding: 10,
-          borderWidth: 1,
-        }}
-        onPress={() => navigation.navigate('Details', {showId: show.id})}>
-        <FastImage
-          source={{
-            uri: show.image.medium,
-            priority:
-              index < 50 ? FastImage.priority.high : FastImage.priority.normal,
-          }}
-          resizeMode={FastImage.resizeMode.contain}
-          style={{height: 50, width: 50}}
+  useEffect(() => {
+    if (debouncedSearch.length) {
+      searchShows(debouncedSearch);
+    }
+  }, [debouncedSearch]);
+
+  const renderContent = () => {
+    if (!search.length || !results.length) {
+      return (
+        <ShowList
+          shows={shows}
+          onEndReached={() => setCurrentPage(prev => prev + 1)}
+          onPressShow={id => navigation.navigate('Details', {showId: id})}
         />
-        <Text>{show.name}</Text>
-      </Pressable>
+      );
+    }
+    return (
+      <SearchResults
+        results={results}
+        onPressShow={id => navigation.navigate('Details', {showId: id})}
+      />
     );
   };
 
   return (
     <SafeAreaView style={{flex: 1}}>
-      <Text>HOME</Text>
-      {error ? (
-        <Text>ERROR</Text>
-      ) : (
-        <View style={{width: '100%', height: '100%'}}>
-          <FlashList
-            data={shows}
-            renderItem={renderItem}
-            estimatedItemSize={20}
-            onEndReached={() => setCurrentPage(prev => prev + 1)}
-            onEndReachedThreshold={0.8}
-          />
-        </View>
-      )}
+      <Text>TVMaze</Text>
+      <TextInput
+        value={search}
+        onChangeText={setSearch}
+        placeholder="Search for shows..."
+      />
+      {error ? <Text>ERROR</Text> : renderContent()}
       {loading && <ActivityIndicator size={'large'} />}
     </SafeAreaView>
   );

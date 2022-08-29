@@ -1,4 +1,5 @@
 import {
+  SearchShowResponse,
   ShowDetailsResponse,
   ShowDetailsWithEpisodesResponse,
   ShowResponse,
@@ -28,3 +29,16 @@ export const getShowDetailsWithEpisodes = (
 ): Promise<AxiosResponse<ShowDetailsWithEpisodesResponse>> => {
   return API.get(`/shows/${id}`, {params: {embed: 'episodes'}});
 };
+
+export const searchShowByQuery = (
+  query: string,
+): Promise<AxiosResponse<SearchShowResponse[]>> => {
+  return API.get('/search/shows', {params: {q: query}});
+};
+
+export const getEpisodeDetails = (
+  episodeId: number
+): Promise<AxiosResponse<SearchShowResponse[]>> => {
+  return API.get('/search/shows', {params: {q: query}});
+};
+

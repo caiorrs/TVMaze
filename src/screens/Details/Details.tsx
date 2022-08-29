@@ -4,13 +4,18 @@ import React, {useEffect, useState} from 'react';
 
 import FastImage from 'react-native-fast-image';
 import {FlashList} from '@shopify/flash-list';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {RootStackParamList} from '../../navigation/types';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {getShowDetailsWithEpisodes} from '../../services/shows';
-import {useRoute} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
-export const Details = () => {
-  const route = useRoute();
+type Props = NativeStackScreenProps<RootStackParamList, 'Details'>;
+
+export const Details = ({route}: Props) => {
   const {showId} = route.params;
+
+  const navigation = useNavigation();
 
   const [data, setData] = useState<ShowDetailsWithEpisodesResponse | null>(
     null,
@@ -22,7 +27,6 @@ export const Details = () => {
     setLoading(true);
     try {
       const response = await getShowDetailsWithEpisodes(showId);
-      console.log({response: response.data._embedded});
       setData(response.data);
     } catch (err) {
       setError(err);
@@ -37,7 +41,9 @@ export const Details = () => {
 
   const renderItem = ({item: episode}: {item: Episode}) => {
     return (
-      <Pressable style={{flexDirection: 'row', margin: 10}} onPress={() => navigation.navigate("Episode", {episode})}>
+      <Pressable
+        style={{flexDirection: 'row', margin: 10}}
+        onPress={() => navigation.navigate('Episode', {episode})}>
         <FastImage
           source={{uri: episode.image.medium}}
           style={{height: 50, width: 50}}
@@ -48,7 +54,7 @@ export const Details = () => {
             S{episode.season}E{episode.number}
           </Text>
         </View>
-      </View>
+      </Pressable>
     );
   };
 
