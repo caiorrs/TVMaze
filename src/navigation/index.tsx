@@ -11,6 +11,8 @@ const Navigator: React.FC = () => {
     <NavigationContainer>
       <Stack.Navigator screenOptions={{headerShown: false}}>
         <Stack.Screen component={Screens.Home} name="Home" />
+        <Stack.Screen component={Screens.Details} name="Details" />
+        <Stack.Screen component={Screens.Episode} name="Episode" />
       </Stack.Navigator>
     </NavigationContainer>
   );
