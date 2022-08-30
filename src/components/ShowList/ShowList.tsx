@@ -4,7 +4,8 @@ import FastImage from 'react-native-fast-image';
 import {FlashList} from '@shopify/flash-list';
 import React from 'react';
 import {ShowResponse} from '../../services/types';
-import {styles} from './styles';
+import {createStyles} from './styles';
+import {useTheme} from '../../contexts/ThemeContext';
 
 interface Props {
   onPressShow: (id: number) => void;
@@ -13,6 +14,9 @@ interface Props {
 }
 
 const ShowList = ({onPressShow, shows, onEndReached}: Props) => {
+  const {theme} = useTheme();
+  const styles = createStyles(theme);
+
   const renderItem = ({
     item: show,
     index,
@@ -33,7 +37,14 @@ const ShowList = ({onPressShow, shows, onEndReached}: Props) => {
           resizeMode={FastImage.resizeMode.contain}
           style={styles.imageStyle}
         />
-        <Text>{show.name}</Text>
+        <View style={styles.showDetailsContainer}>
+          <Text style={styles.showName}>{show.name}</Text>
+          {show.rating.average && (
+            <Text style={styles.showRating}>
+              {show.rating.average?.toFixed(1)}
+            </Text>
+          )}
+        </View>
       </Pressable>
     );
   };

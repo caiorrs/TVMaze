@@ -4,6 +4,7 @@ import React, {useEffect, useState} from 'react';
 
 import FastImage from 'react-native-fast-image';
 import {FlashList} from '@shopify/flash-list';
+import {Header} from '../../components';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../navigation/types';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -60,7 +61,7 @@ export const Details = ({route}: Props) => {
 
   return (
     <SafeAreaView style={{flex: 1}}>
-      <Text>Details</Text>
+      <Header title={data?.name || 'Details'} onBack={navigation.goBack} />
       {loading && <ActivityIndicator size={'large'} />}
       {error ? (
         <Text>{err.message}</Text>

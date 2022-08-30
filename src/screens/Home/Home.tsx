@@ -1,6 +1,6 @@
 import {ActivityIndicator, Text, TextInput} from 'react-native';
+import {Header, SearchResults, ShowList} from '../../components';
 import React, {useCallback, useEffect, useState} from 'react';
-import {SearchResults, ShowList} from '../../components';
 import {SearchShowResponse, ShowResponse} from '../../services/types';
 import {getShowsPaginated, searchShowByQuery} from '../../services/shows';
 
@@ -11,7 +11,7 @@ import {useDebounce} from '../../hooks/useDebounce';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
-export const Home = ({navigation}: Props) => {
+export const Home = ({navigation, route}: Props) => {
   const [shows, setShows] = useState<ShowResponse[]>([]);
   const [results, setResults] = useState<SearchShowResponse[]>([]);
   const [loading, setLoading] = useState(false);
@@ -77,7 +77,7 @@ export const Home = ({navigation}: Props) => {
 
   return (
     <SafeAreaView style={{flex: 1}}>
-      <Text>TVMaze</Text>
+      <Header title={route.name} />
       <TextInput
         value={search}
         onChangeText={setSearch}

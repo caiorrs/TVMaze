@@ -1,4 +1,5 @@
+import Header from './Header/Header';
 import SearchResults from './SearchResults/SearchResults';
 import ShowList from './ShowList/ShowList';
 
-export {ShowList, SearchResults};
+export {ShowList, SearchResults, Header};
