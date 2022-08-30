@@ -1,3 +1,4 @@
+import {FlashList} from '@shopify/flash-list';
 import {Header} from '../../components';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import React from 'react';
@@ -15,6 +16,7 @@ export const Episode = ({navigation, route}: Props) => {
       <Header title={episodeDetails.name} onBack={navigation.goBack} />
       <Text>Episode</Text>
       <Text>{episodeDetails.name}</Text>
+      {/* <FlashList /> */}
     </SafeAreaView>
   );
 };

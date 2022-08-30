@@ -4,6 +4,8 @@ import FastImage from 'react-native-fast-image';
 import {FlashList} from '@shopify/flash-list';
 import React from 'react';
 import {SearchShowResponse} from '../../services/types';
+import {createStyles} from './styles';
+import {useTheme} from '../../contexts/ThemeContext';
 
 type Props = {
   results: SearchShowResponse[];
@@ -11,6 +13,9 @@ type Props = {
 };
 
 const SearchResults = ({results, onPressShow}: Props) => {
+  const {theme} = useTheme();
+  const styles = createStyles(theme);
+
   const renderResultItem = ({
     item: {show},
     index,
@@ -20,12 +25,7 @@ const SearchResults = ({results, onPressShow}: Props) => {
   }) => {
     return (
       <Pressable
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          padding: 10,
-          borderWidth: 1,
-        }}
+        style={styles.itemContainer}
         onPress={() => onPressShow(show.id)}>
         <FastImage
           source={{
@@ -34,9 +34,16 @@ const SearchResults = ({results, onPressShow}: Props) => {
               index < 50 ? FastImage.priority.high : FastImage.priority.normal,
           }}
           resizeMode={FastImage.resizeMode.contain}
-          style={{height: 50, width: 50}}
+          style={styles.imageStyle}
         />
-        <Text>{show.name}</Text>
+        <View style={styles.showDetailsContainer}>
+          <Text style={styles.showName}>{show.name}</Text>
+          {show.rating.average && (
+            <Text style={styles.showRating}>
+              {show.rating.average?.toFixed(1)}
+            </Text>
+          )}
+        </View>
       </Pressable>
     );
   };

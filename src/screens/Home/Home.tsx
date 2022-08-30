@@ -1,9 +1,10 @@
-import {ActivityIndicator, Text, TextInput} from 'react-native';
+import {ActivityIndicator, Text} from 'react-native';
 import {Header, SearchResults, ShowList} from '../../components';
 import React, {useCallback, useEffect, useState} from 'react';
 import {SearchShowResponse, ShowResponse} from '../../services/types';
 import {getShowsPaginated, searchShowByQuery} from '../../services/shows';
 
+import Input from '../../components/Input/Input';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../navigation/types';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -78,7 +79,7 @@ export const Home = ({navigation, route}: Props) => {
   return (
     <SafeAreaView style={{flex: 1}}>
       <Header title={route.name} />
-      <TextInput
+      <Input
         value={search}
         onChangeText={setSearch}
         placeholder="Search for shows..."

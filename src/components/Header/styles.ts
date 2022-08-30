@@ -8,6 +8,7 @@ export const createStyles = (theme: ThemeType) =>
       flexDirection: 'row',
       backgroundColor: theme.colors.background,
       alignItems: 'center',
+      marginBottom: 10,
     },
     titleContainer: {
       flex: 0.7,
