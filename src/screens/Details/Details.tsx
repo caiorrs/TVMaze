@@ -1,16 +1,15 @@
-import {ActivityIndicator, Pressable, Text, View} from 'react-native';
+import {ActivityIndicator, Text, View} from 'react-native';
 import {Episode, ShowDetailsWithEpisodesResponse} from '../../services/types';
+import {EpisodesList, Header, RenderHtml} from '../../components';
 import React, {useEffect, useMemo, useState} from 'react';
 
 import FastImage from 'react-native-fast-image';
-import {FlashList} from '@shopify/flash-list';
-import {Header} from '../../components';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../navigation/types';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {createStyles} from './styles';
+import {formatDate} from '../../utils';
 import {getShowDetailsWithEpisodes} from '../../services/shows';
-// import moment from 'moment'
 import {useTheme} from '../../contexts/ThemeContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Details'>;
@@ -60,76 +59,56 @@ export const Details = ({route, navigation}: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const stickyHeaderIndices = seasons
-    .map((item, index) => {
-      if (typeof item === 'number') {
-        return index;
-      } else {
-        return null;
-      }
-    })
-    .filter(item => item !== null) as number[];
-
-  const renderItem = ({item: episode}: {item: Episode | number}) => {
-    if (typeof episode === 'number') {
+  const renderAiredTime = () => {
+    if (data?.premiered) {
       return (
-        <View style={styles.sectionContainer}>
-          <Text style={styles.sectionText}>
-            Season {String(episode).padStart(2, '0')}
+        <View>
+          <Text style={styles.premierText}>
+            Premiered on: {formatDate(data.premiered)}
           </Text>
+          {data?.ended && (
+            <Text style={styles.endText}>
+              Ended on: {formatDate(data.ended)}
+            </Text>
+          )}
         </View>
       );
     }
+    return null;
+  };
 
+  const ListHeaderComponent = () => {
     return (
-      <Pressable
-        style={styles.episode}
-        onPress={() => navigation.navigate('Episode', {episode})}>
+      <>
         <FastImage
-          source={{uri: episode.image.medium}}
-          style={styles.episodeImage}
+          source={{uri: data?.image?.original}}
+          style={styles.poster}
+          resizeMode={FastImage.resizeMode.contain}
         />
-        <View style={styles.episodeInfo}>
-          <Text style={styles.episodeName}>{episode.name}</Text>
-          <Text style={styles.episodeNumber}>
-            S{episode.season}E{episode.number}
-          </Text>
+        <View style={styles.infoContainer}>
+          <Text style={styles.genres}>Genres: {data?.genres.join(', ')}</Text>
+          <Text style={styles.summaryTitle}>Summary:</Text>
+          {data?.summary && <RenderHtml html={data.summary} />}
+          {renderAiredTime()}
         </View>
-      </Pressable>
+      </>
     );
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <Header title={data?.name || 'Details'} onBack={navigation.goBack} />
-      {loading && <ActivityIndicator size={'large'} />}
+      {loading && (
+        <ActivityIndicator size={'large'} color={theme.colors.white} />
+      )}
       {error ? (
         <Text>{err.message}</Text>
       ) : (
-        <>
-          <FastImage
-            source={{uri: data?.image.original}}
-            style={styles.poster}
-            resizeMode={FastImage.resizeMode.contain}
-          />
-          <View style={styles.infoContainer}>
-            <Text style={styles.genres}>Genres: {data?.genres.join(', ')}</Text>
-            <Text style={styles.summaryTitle}>Summary:</Text>
-            <Text style={styles.summary}>{data?.summary}</Text>
-            {/* <Text>Airs on: {moment(data?.schedule.days)}</Text> */}
-          </View>
-          <View style={{flex: 1}}>
-            <FlashList
-              data={seasons}
-              renderItem={renderItem}
-              getItemType={type =>
-                typeof type === 'number' ? 'sectionHeader' : 'row'
-              }
-              estimatedItemSize={70}
-              stickyHeaderIndices={stickyHeaderIndices}
-            />
-          </View>
-        </>
+        <EpisodesList
+          ListHeaderComponent={ListHeaderComponent}
+          onPressEpisode={episode => navigation.navigate('Episode', {episode})}
+          seasons={seasons}
+        />
       )}
     </SafeAreaView>
   );

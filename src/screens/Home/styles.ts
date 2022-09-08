@@ -1,3 +1,11 @@
 import {StyleSheet} from 'react-native';
 
-export const styles = StyleSheet.create({});
+export const createStyles = () =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+    },
+    inputContainer: {
+      margin: 10,
+    },
+  });

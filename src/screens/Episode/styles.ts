@@ -36,4 +36,15 @@ export const createStyles = (theme: ThemeType) =>
       fontSize: 18,
       color: theme.colors.text,
     },
+    airDate: {
+      fontSize: 18,
+      color: theme.colors.text,
+    },
+    rating: {
+      fontSize: 18,
+      color: theme.colors.text,
+    },
+    scrollView: {
+      flexGrow: 1,
+    },
   });

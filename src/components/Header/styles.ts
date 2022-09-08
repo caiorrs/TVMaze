@@ -9,6 +9,7 @@ export const createStyles = (theme: ThemeType) =>
       backgroundColor: theme.colors.background,
       alignItems: 'center',
       marginBottom: 10,
+      paddingHorizontal: 20,
     },
     titleContainer: {
       flex: 0.7,

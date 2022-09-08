@@ -13,7 +13,7 @@ const Input = ({...props}: InputProps) => {
     <View style={styles.container}>
       <TextInput
         style={styles.input}
-        placeholderTextColor={theme.colors.text}
+        placeholderTextColor={theme.colors.darkText}
         {...props}
       />
     </View>

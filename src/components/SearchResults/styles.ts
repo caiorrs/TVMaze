@@ -8,7 +8,7 @@ export const createStyles = (theme: ThemeType) =>
       alignItems: 'center',
       padding: 10,
       borderWidth: 1,
-      backgroundColor: theme.colors.darkText,
+      backgroundColor: theme.colors.white,
       borderRadius: 20,
       margin: 10,
     },
@@ -33,5 +33,10 @@ export const createStyles = (theme: ThemeType) =>
       flexDirection: 'row',
       justifyContent: 'space-between',
       flex: 1,
+    },
+    noShowsFound: {
+      color: theme.colors.accent,
+      fontSize: 18,
+      textAlign: 'center',
     },
   });

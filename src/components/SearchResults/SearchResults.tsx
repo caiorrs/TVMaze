@@ -10,9 +10,10 @@ import {useTheme} from '../../contexts/ThemeContext';
 type Props = {
   results: SearchShowResponse[];
   onPressShow: (id: number) => void;
+  noShowsFound: boolean;
 };
 
-const SearchResults = ({results, onPressShow}: Props) => {
+const SearchResults = ({results, onPressShow, noShowsFound}: Props) => {
   const {theme} = useTheme();
   const styles = createStyles(theme);
 
@@ -48,12 +49,26 @@ const SearchResults = ({results, onPressShow}: Props) => {
     );
   };
 
+  const ListEmptyComponent = () => {
+    if (noShowsFound) {
+      return (
+        <View>
+          <Text style={styles.noShowsFound}>
+            No shows were found for the search term, please try another one
+          </Text>
+        </View>
+      );
+    }
+    return null;
+  };
+
   return (
     <View style={{flex: 1}}>
       <FlashList
         data={results}
         renderItem={renderResultItem}
         estimatedItemSize={72}
+        ListEmptyComponent={ListEmptyComponent}
       />
     </View>
   );

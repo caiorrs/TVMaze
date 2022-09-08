@@ -57,6 +57,7 @@ const ShowList = ({onPressShow, shows, onEndReached}: Props) => {
         estimatedItemSize={72}
         onEndReached={onEndReached}
         onEndReachedThreshold={0.8}
+        showsVerticalScrollIndicator={false}
       />
     </View>
   );

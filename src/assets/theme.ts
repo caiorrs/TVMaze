@@ -8,6 +8,7 @@ export const theme = {
       background: '#FFFFFF',
       text: '#212121',
     },
+    white: '#FFF',
   },
 };
 
